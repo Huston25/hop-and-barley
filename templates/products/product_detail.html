@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {{ product.name }} | Hop & Barley
+{% endblock %}
+
+{% block content %}
+
+<main class="page-product">
+
+    <div class="container">
+
+        <!-- Product Info -->
+        <section class="product-details-section">
+
+            <div class="product-image-container">
+
+                {% if product.image %}
+                    <img src="{{ product.image.url }}"
+                         alt="{{ product.name }}"
+                         class="product-image">
+
+                {% else %}
+                    <img src="{% static 'img/no-image.jpg' %}"
+                         alt="No Image"
+                         class="product-image">
+                {% endif %}
+
+            </div>
+
+            <div class="product-info-column">
+
+                <div class="product-title-price">
+
+                    <h1 class="product-name">
+                        {{ product.name }}
+                    </h1>
+
+                    <div class="price-section">
+                        <span class="price-tag">
+                            per 1 lb
+                        </span>
+
+                        <p class="product-price">
+                            ${{ product.price }}
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="product-description">
+
+                    <p>
+                        {{ product.description }}
+                    </p>
+
+                </div>
+
+                <div class="cart-controls">
+
+                    <button class="button button--primary add-to-cart-button">
+
+                        <i class="fa-solid fa-cart-shopping"></i>
+
+                        <span>
+                            Add to Cart
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Specifications -->
+        {% if product.specifications %}
+<section class="accordion-section">
+    <div class="accordion-item">
+        <div class="accordion-title">
+            <h3>{{ product.category.name }} Specifications</h3>
+            <i class="fa-solid fa-chevron-down accordion-icon"></i>
+        </div>
+
+        <div class="accordion-content">
+            <ul>
+                {% for key, value in product.specifications.items %}
+                    <li>
+                        <strong>{{ key }}:</strong>
+                        {% if value|length > value.0  %}
+                            <ul>
+                                {% for item in value %}
+                                    <li>{{ item }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            {{ value }}
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+    </div>
+
+    <section class="reviews-section">
+        <h2 class="reviews-title">Latest reviews</h2>
+
+        <div class="reviews-grid">
+            {% for review in reviews %}
+                <div class="review-card">
+                    <div class="review-rating">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.rating %}
+                                <i class="fa-solid fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="review-body">
+                        <h4 class="review-heading">{{ review.title }}</h4>
+                        <p class="review-text"> {{ review.text }}</p>
+                    </div>
+                    <div class="review-author">
+                         {% if review.avatar %}
+                            <img src="{{ review.avatar.url }}" alt="{{ review.name }}" class="author-avatar">
+                         {% endif %}
+                    </div>
+                    <span class="author-name">{{ review.name }}</span>
+                </div>
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+</main>
+
+{% endblock %}
