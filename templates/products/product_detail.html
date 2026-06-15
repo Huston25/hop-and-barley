@@ -58,16 +58,14 @@
                 </div>
 
                 <div class="cart-controls">
+                    <form method="post" action="{% url 'orders:cart_add' product.id %}">
+                        {% csrf_token %}
+                        <input type="number" name="quantity" value="1" min="1">
+                        <button type="submit" class="button button--primary add-to-cart-button">
+                            Add to cart
+                        </button>
+                    </form>
 
-                    <button class="button button--primary add-to-cart-button">
-
-                        <i class="fa-solid fa-cart-shopping"></i>
-
-                        <span>
-                            Add to Cart
-                        </span>
-
-                    </button>
 
                 </div>
 

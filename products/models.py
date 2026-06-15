@@ -10,6 +10,9 @@ class Category(models.Model):
                                related_name='children')
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
+    class Meta:
+        verbose_name = 'Category'
+        verbose_name_plural = 'Categories'
 
     def __str__(self):
         return self.name
@@ -43,6 +46,7 @@ class Review(models.Model):
     text = models.TextField()
     avatar = models.ImageField(upload_to='product_avatars/', null=True, blank=True)
     created_at = models.DateField(auto_now_add=True)
+    related_name = 'reviews'
 
     class Meta:
         ordering = ['-created_at']

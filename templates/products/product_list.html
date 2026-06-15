@@ -19,46 +19,63 @@
                 </div>
             </div>
 
-            <div class="sidebar__section">
-                <h3 class="section-title">Product Type</h3>
-                <div class="checkbox-group">
-                    <label class="checkbox-container">Hops
-                        <input type="checkbox" data-keyword="Hops">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="checkbox-container">Malts
-                        <input type="checkbox" data-keyword="Malts">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="checkbox-container">Yeast
-                        <input type="checkbox" data-keyword="Yeast">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="checkbox-container">Adjuncts
-                        <input type="checkbox" data-keyword="Adjuncts">
-                        <span class="checkmark"></span>
-                    </label>
+            <form method="get" class="filter-form">
+                <div class="sidebar__section">
+                    <h3 class="section-title">Product Type</h3>
+                    <div class="checkbox-group">
+                        {% for category in categories %}
+                            <label class="checkbox-container">{{ category.name }}
+                                <input type="checkbox" data-keyword="{{ category.slug}}" name="category"
+                                value="{{ category.slug }}"
+                                {% if selected_category == category.slug %}
+                                    checked
+                                {% endif %}
+                                >
+                                <span class="checkmark"></span>
+
+                            </label>
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
+                <button type="submit" class="button button--primary">Filter</button>
+                <a href="{% url 'products:product_list' %}" class="button button--secondary">Reset</a>
+            </form>
         </aside>
 
         <section class="products-area product-grid-section">
-            <div class="search-sort-bar">
+            <form method="get" class="search-sort-bar">
+                {% if selected_category %}
+                    <input type="hidden" name="category" value="{{ selected_category }}">
+                {% endif %}
                 <div class="search-input-wrapper">
-                    <input type="text" placeholder="Search" class="search-input">
-                    <button class="search-button" aria-label="Search">
+                    <input type="text" name="q" placeholder="Search" class="search-input" value="{{ q }}">
+                    <button type="submit" class="search-button" aria-label="Search">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </div>
+                </form>
                 <div class="sort-options">
-                    <button class="sort-button active-sort">
-                        <span>New</span>
-                    </button>
-                    <button class="sort-button">Price ascending</button>
-                    <button class="sort-button">Price descending</button>
-                    <button class="sort-button">Rating</button>
+                                        <a href="?{% if selected_category %}category={{ selected_category }}&{% endif %}{% if q %}q={{ q }}&{% endif %}sort=new"
+                       class="sort-button {% if sort == 'new' %}active-sort{% endif %}">
+                        New
+                    </a>
+
+                    <a href="?{% if selected_category %}category={{ selected_category }}&{% endif %}{% if q %}q={{ q }}&{% endif %}sort=price_asc"
+                       class="sort-button {% if sort == 'price_asc' %}active-sort{% endif %}">
+                        Price ascending
+                    </a>
+
+                    <a href="?{% if selected_category %}category={{ selected_category }}&{% endif %}{% if q %}q={{ q }}&{% endif %}sort=price_desc"
+                       class="sort-button {% if sort == 'price_desc' %}active-sort{% endif %}">
+                        Price descending
+                    </a>
+
+                    <a href="?{% if selected_category %}category={{ selected_category }}&{% endif %}{% if q %}q={{ q }}&{% endif %}sort=rating"
+                       class="sort-button {% if sort == 'rating' %}active-sort{% endif %}">
+                        Rating
+                    </a>
                 </div>
-            </div>
+
 
             <div class="product-grid">
                 {% for product in products %}
@@ -79,23 +96,48 @@
 
             </div>
 
-            <div class="pagination">
-                <a href="#" class="pagination__link pagination__link--prev">
-                    <i class="fa-solid fa-arrow-left"></i>
-                    <span>Previous</span>
-                </a>
-                <div class="pagination-list">
-                    <a href="#" class="pagination__link active">1</a>
-                    <a href="#" class="pagination__link">2</a>
-                    <a href="#" class="pagination__link">3</a>
-                    <span class="pagination__dots">...</span>
-                    <a href="#" class="pagination__link">20</a>
-                </div>
-                <a href="#" class="pagination__link pagination__link--next">
-                    <span>Next</span>
-                    <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
+           <div class="pagination">
+
+    {% if page_obj.has_previous %}
+        <a href="?{% if selected_category %}category={{ selected_category }}&{% endif %}{% if q %}q={{ q }}&{% endif %}{% if sort %}sort={{ sort }}&{% endif %}page={{ page_obj.previous_page_number }}"
+           class="pagination__link pagination__link--prev">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Previous</span>
+        </a>
+    {% endif %}
+
+    <div class="pagination-list">
+        {% for num in page_obj.paginator.page_range %}
+
+            {% if num == 1 or num == page_obj.paginator.num_pages or num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}
+
+                {% if page_obj.number == num %}
+                    <span class="pagination__link pagination__link--active">
+                        {{ num }}
+                    </span>
+                {% else %}
+                    <a href="?{% if selected_category %}category={{ selected_category }}&{% endif %}{% if q %}q={{ q }}&{% endif %}{% if sort %}sort={{ sort }}&{% endif %}page={{ num }}"
+                       class="pagination__link">
+                        {{ num }}
+                    </a>
+                {% endif %}
+
+            {% elif num == page_obj.number|add:"-3" or num == page_obj.number|add:"3" %}
+                <span class="pagination__dots">...</span>
+            {% endif %}
+
+        {% endfor %}
+    </div>
+
+    {% if page_obj.has_next %}
+        <a href="?{% if selected_category %}category={{ selected_category }}&{% endif %}{% if q %}q={{ q }}&{% endif %}{% if sort %}sort={{ sort }}&{% endif %}page={{ page_obj.next_page_number }}"
+           class="pagination__link pagination__link--next">
+            <span>Next</span>
+            <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    {% endif %}
+
+</div>
         </section>
     </div>
 {% endblock %}
