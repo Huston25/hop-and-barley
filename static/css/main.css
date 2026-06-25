@@ -1131,7 +1131,7 @@ body.user-logged-in .header__user-actions {
 }
 
 .cart-container {
-    max-width: 640px;
+    max-width: 760px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -1158,6 +1158,8 @@ body.user-logged-in .header__user-actions {
     border-radius: 8px;
     display: flex;
     gap: 24px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .cart-item__image {
@@ -1981,3 +1983,10 @@ body.user-logged-in .header__user-actions {
     padding: 0 32px;
 }
 
+.cart-item__image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border-radius: 12px;
+}
