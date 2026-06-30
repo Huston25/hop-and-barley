@@ -8,7 +8,7 @@ from products.models import Product
 
 # Create your views here.
 class CartAddView(LoginRequiredMixin, View):
-    login_url = '/admin/login/'
+    login_url = '/users/login/'
     def post(self, request, product_id):
         product = get_object_or_404(Product, id=product_id, is_active=True)
         quantity = int(request.POST.get('quantity', 1))
@@ -23,14 +23,14 @@ class CartAddView(LoginRequiredMixin, View):
 
 
 class CartDetailView(LoginRequiredMixin, View):
-    login_url = '/admin/login/'
+    login_url = '/users/login/'
     def get(self, request):
         cart, created = Cart.objects.get_or_create(user=request.user)
         return render(request, 'cart.html', {'cart': cart, 'cart_items': cart.items.all()})
 
 
 class CartItemDeleteView(LoginRequiredMixin, View):
-    login_url = '/admin/login/'
+    login_url = '/users/login/'
 
     def post(self, request, item_id):
         cart_item = get_object_or_404(
@@ -43,7 +43,7 @@ class CartItemDeleteView(LoginRequiredMixin, View):
         return redirect('cart_detail')
 
 class CartItemQuantityUpdateView(LoginRequiredMixin, View):
-    login_url = '/admin/login/'
+    login_url = '/users/login/'
 
     def post(self, request, item_id):
         cart_item = get_object_or_404(
